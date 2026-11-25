@@ -18,13 +18,21 @@
 
   /* Mobile menu */
   var burger = $("#burger"), menu = $("#mobileMenu"), overlay = $("#menuOverlay"), closeBtn = $("#mobileClose");
+  var lastFocus = null;
   function setMenu(open){
     if (!menu) return;
+    if (open){ lastFocus = document.activeElement; }
     menu.classList.toggle("open", open);
     if (overlay) overlay.classList.toggle("show", open);
     menu.setAttribute("aria-hidden", open ? "false" : "true");
     if (burger) burger.setAttribute("aria-expanded", open ? "true" : "false");
     document.body.style.overflow = open ? "hidden" : "";
+    if (open){
+      var first = $(".mobile-nav a", menu);
+      if (first) setTimeout(function(){ first.focus(); }, 120);
+    } else if (lastFocus && lastFocus.focus){
+      lastFocus.focus();
+    }
   }
   if (burger) burger.addEventListener("click", function(){ setMenu(true); });
   if (closeBtn) closeBtn.addEventListener("click", function(){ setMenu(false); });
@@ -43,12 +51,12 @@
   function applyFilter(){
     var shown = 0;
     cards.forEach(function(card){
-      var typeOk = (activeType === "all" || card.dataset.type === activeType);
+      var type = card.dataset.type;
+      var typeOk = (activeType === "all" || type === activeType);
       var areaOk = !searchArea || (card.dataset.area || "").toLowerCase().indexOf(searchArea.toLowerCase()) !== -1;
       var price = parseFloat(card.dataset.price || "0");
-      var priceOk = !searchMax || activeType === "let" || activeType === "commercial" || price <= searchMax || activeType === "all" && price <= searchMax;
-      // For sale search, enforce max price; for let/commercial ignore sale price cap
-      if (activeType === "sale" && searchMax) priceOk = price <= searchMax;
+      var priceOk = true;
+      if (searchMax && type === "sale" && (activeType === "sale" || activeType === "all")) priceOk = price <= searchMax;
       var show = typeOk && areaOk && priceOk;
       card.hidden = !show;
       if (show) shown++;
@@ -73,16 +81,34 @@
     });
   });
 
-  /* Hero search */
+  /* Hero search — price options adapt to Buy / Rent / Commercial */
+  var priceSets = {
+    sale: [["", "No max"], ["300000", "£300,000"], ["500000", "£500,000"], ["700000", "£700,000"], ["1000000", "£1,000,000"]],
+    let: [["", "No max"], ["1500", "£1,500 PCM"], ["2200", "£2,200 PCM"], ["3000", "£3,000 PCM"], ["3500", "£3,500 PCM"]],
+    commercial: [["", "No max"], ["65000", "£65,000"], ["250000", "£250,000"], ["600000", "£600,000"], ["1100000", "£1,100,000"]]
+  };
   var searchTabs = $$(".search-tab");
+  var priceSel = $("#searchPrice");
   var searchType = "sale";
-  searchTabs.forEach(function(t){
-    t.addEventListener("click", function(){
-      searchTabs.forEach(function(x){ x.classList.remove("is-active"); x.setAttribute("aria-selected","false"); });
-      t.classList.add("is-active"); t.setAttribute("aria-selected","true");
-      searchType = t.dataset.type;
+  function fillPrices(type){
+    if (!priceSel) return;
+    priceSel.innerHTML = "";
+    priceSets[type].forEach(function(o){
+      var opt = document.createElement("option");
+      opt.value = o[0]; opt.textContent = o[1];
+      priceSel.appendChild(opt);
     });
-  });
+    searchMax = 0;
+  }
+  function setSearchTab(t){
+    searchTabs.forEach(function(x){ x.classList.remove("is-active"); x.setAttribute("aria-selected","false"); });
+    t.classList.add("is-active"); t.setAttribute("aria-selected","true");
+    searchType = t.dataset.type;
+    fillPrices(searchType);
+    var label = priceSel ? priceSel.closest(".field").querySelector("span") : null;
+    if (label) label.textContent = searchType === "let" ? "Max rent" : "Max price";
+  }
+  searchTabs.forEach(function(t){ t.addEventListener("click", function(){ setSearchTab(t); }); });
   $$(".hint-link").forEach(function(h){
     h.addEventListener("click", function(){
       var input = $("#searchArea"); if (input) input.value = h.dataset.area;
@@ -92,10 +118,11 @@
   if (searchForm) searchForm.addEventListener("submit", function(e){
     e.preventDefault();
     searchArea = ($("#searchArea") ? $("#searchArea").value.trim() : "");
-    searchMax = ($("#searchPrice") ? parseInt($("#searchPrice").value, 10) || 0 : 0);
+    searchMax = (priceSel ? parseInt(priceSel.value, 10) || 0 : 0);
     setFilter(searchType);
     var target = $("#properties"); if (target) target.scrollIntoView({behavior:"smooth"});
   });
+  fillPrices("sale");
 
   /* Reviews slider */
   var track = $("#reviewTrack");
@@ -120,7 +147,8 @@
     }
     function go(i){
       index = Math.max(0, Math.min(i, maxIndex()));
-      var w = slides[0].getBoundingClientRect().width;
+      var gap = parseFloat(getComputedStyle(track).columnGap || getComputedStyle(track).gap || "0") || 0;
+      var w = slides[0].getBoundingClientRect().width + gap;
       track.style.transform = "translateX(" + (-index * w) + "px)";
       renderDots();
     }
@@ -164,7 +192,8 @@
   var form = $("#valuationForm");
   if (form) form.addEventListener("submit", function(e){
     e.preventDefault();
-    var name = form.name.value.trim(), phone = form.phone.value.trim(), pc = form.postcode.value.trim(), intent = form.intent.value;
+    var el = function(n){ var f = form.elements[n]; return f ? (f.value || "").trim() : ""; };
+    var name = el("name"), phone = el("phone"), pc = el("postcode"), intent = el("intent") || "Sell my home";
     var err = $("#formError");
     if (!name || !phone || !pc){
       if (err) err.hidden = false;

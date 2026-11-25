@@ -1,17 +1,14 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 340 72" role="img" aria-label="Galaxy Real Estate logo">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 244 76" role="img" aria-label="Galaxy Real Estate">
   <g>
-    <!-- Orbit ring -->
-    <ellipse cx="38" cy="38" rx="34" ry="11" fill="none" stroke="#1E2A30" stroke-width="3.2" transform="rotate(-18 38 38)"/>
-    <!-- G -->
+    <ellipse cx="38" cy="38" rx="34" ry="11" fill="none" stroke="#F26522" stroke-width="3.2" transform="rotate(-18 38 38)"/>
     <path d="M52 18 A22 22 0 1 0 52 58 L52 40 L62 40" fill="none" stroke="#F26522" stroke-width="11" stroke-linecap="round" stroke-linejoin="round"/>
-    <!-- House -->
     <g transform="translate(38 30)">
       <path d="M-9 2 L0 -7 L9 2 L9 10 L-9 10 Z" fill="#F26522"/>
-      <rect x="-3.2" y="2.5" width="6.4" height="5.5" fill="#fff"/>
-      <path d="M0 2.5 V8 M-3.2 5.2 H3.2" stroke="#F26522" stroke-width="1.1"/>
+      <rect x="-3.4" y="2.4" width="6.8" height="5.6" fill="#FFFFFF"/>
+      <path d="M0 2.4 V8 M-3.4 5.2 H3.4" stroke="#F26522" stroke-width="1.2"/>
     </g>
   </g>
-  <text x="84" y="38" font-family="Manrope, Arial, sans-serif" font-size="30" font-weight="800" letter-spacing="1.5" fill="#1E2A30">GALAXY</text>
-  <line x1="86" y1="47" x2="168" y2="47" stroke="#1E2A30" stroke-width="1.6"/>
-  <text x="174" y="52" font-family="Manrope, Arial, sans-serif" font-size="11.5" font-weight="700" letter-spacing="2.2" fill="#1E2A30">REAL ESTATE</text>
+  <text x="86" y="40" font-family="Manrope, 'Segoe UI', Arial, Helvetica, sans-serif" font-size="31" font-weight="800" letter-spacing="1" textLength="138" lengthAdjust="spacingAndGlyphs" fill="#1E2A30">GALAXY</text>
+  <line x1="86" y1="48" x2="208" y2="48" stroke="#F26522" stroke-width="2"/>
+  <text x="86" y="64" font-family="Manrope, 'Segoe UI', Arial, Helvetica, sans-serif" font-size="12.5" font-weight="700" letter-spacing="3.4" textLength="122" lengthAdjust="spacingAndGlyphs" fill="#1E2A30">REAL ESTATE</text>
 </svg>

@@ -11,7 +11,7 @@ index.html
 css/style.css
 js/script.js
 assets/
-  images/   hero, property & lifestyle photography (optimised JPG)
+  images/   hero, property & lifestyle photography (WebP + optimised JPEG fallback via <picture>)
   logo/     logo.svg, logo-light.svg, favicon.svg (+ original-reference.jpg)
   icons/    inline SVG icons used in markup
 .nojekyll
@@ -28,7 +28,7 @@ assets/
 - The live site was under construction at research time; archived homepage content was used for services, areas, listings and testimonials. No contact details were invented.
 
 ## Features
-- Sticky header + full-screen mobile menu, hero property search (Buy / Rent / Commercial) with live filtering
+- Sticky header + full-screen mobile menu, hero property search (Buy / Rent / Commercial) with live filtering and adaptive price bands
 - Property filter tabs, testimonial slider (touch + auto), FAQ accordion
 - Valuation form hands off via `mailto:` with pre-filled details (no backend on a static demo — no fake success message)
 - Floating call button, back-to-top, and a mobile bottom action bar (Call / Valuation / Homes)
@@ -36,3 +36,8 @@ assets/
 
 ## SEO / demo note
 `noindex, nofollow` is set so this demo does not compete with the live galaxyrealestate.co.uk in search results. Remove it when this becomes the production site.
+
+## Manual step: enable GitHub Pages
+This account's integration cannot toggle Pages via the API (HTTP 403). To publish:
+Settings → Pages → Build and deployment → Source: **Deploy from a branch** → Branch: choose the branch containing this commit → Folder: **/(root)** → Save.
+With `.nojekyll` present and `index.html` at the root, the site serves immediately at `https://<user>.github.io/<repo>/`.
